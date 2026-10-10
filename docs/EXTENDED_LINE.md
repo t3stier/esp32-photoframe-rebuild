@@ -239,6 +239,10 @@ published as a pre-release the same evening. **Eighth candidate, 2026-10-10:** `
 repeat fixes of the base's `main` (DST on the wall clock, `EXDATE`/`RDATE`/`RECURRENCE-ID`, `DURATION`, the earliest 48 events). Checked first: the check set, the compile matrix, CI and Build Firmware green on the extended repository, the
 CI-built Waveshare image flashed and used; then the tag as `t3stier`, the draft, its title and notes by hand (kept in the maintainer's `local-tools/scratch/rc2_notes.md`), and - after the maintainer's go - published as a pre-release;
 the web flasher's pre-release manifest then showed it. Afterwards the reader's own DAILY/WEEKLY expander was compiled out of builds with the option (`c0800c6`, not in rc2, no change of results). Not seen yet: a run of days, any other board.
+**Ninth candidate, 2026-10-10:** `v219.0.2-rc1` on the base `v219.0.2` (released the same day, fixes only). Compared with rc2 it adds the compiled-out reader expander (`c0800c6`) and the base's fixes since `v219.0.1`: the config answer that names
+the fields the frame ignored, the Web UI without internet access (icons and font bundled), the import messages, the gallery and upload fixes, the Settings export in a build with the Agenda but without `fixes`. Checked first: the check set, CI and Build
+Firmware green on both repositories, the CI-built Waveshare images of the base and of this line flashed part by part (crawl of the Web UI, the import/export/upload flows, the config answers, the update check three times); then the tag as `t3stier`,
+the draft, its notes by hand, and the publication as a pre-release. Still not seen: a run of days, any other board.
 
 Quick check that everything is still in step: `git ls-remote t3stier`, `git ls-remote origin` and `git ls-remote extras` must show the same commit for
 `refs/heads/extras` (first two) and `refs/heads/main` (the third); the base `refs/heads/main` of the first two is the base.
