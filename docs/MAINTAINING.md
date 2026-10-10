@@ -227,6 +227,12 @@ of the board you touched. After an **upstream merge** or a **web change**: also 
 Manual web bundle compare: `git worktree add --detach <tmp> <BASELINE sha>`, junction/symlink
 `webapp/node_modules` into it, `npx vite build` there (writes `main/webapp/`), then in this repo
 `VITE_FEATURES="" VITE_OUT_DIR=<dir> npx vite build`; compare the SHA-256 of every file (16 files including `.gz`).
+**Both builds must use the same `node_modules`** (junction the baseline's `webapp/node_modules` to this repository's): the fork's `package-lock.json`
+differs from upstream's since `e03b813` (the `npm audit` updates, among them `exifreader` 4.41.0 -> 4.46.0), and a baseline built with upstream's own
+install differs in `assets/exif-reader.js(.gz)` only. Result of 2026-10-10 (`v219.0.2`, baseline `186ebaf`, same `node_modules`): the base's all-off bundle
+equals upstream's in every file; the extended line's differs in `assets/index.js` and `assets/index.css` by one scoped-style id (`data-v-fc3702bb` instead of
+`data-v-222c3704`, from `ImageUpload.vue`; the same in `v219.0.1-rc2`; the cause was not examined further, the text of all 33 web files is equal, `alloff_web.py`).
+`build.py --step webapp` in the baseline worktree turned a junctioned `node_modules` into a real install (`npm ci`), so junction again afterwards.
 
 `verify_baseline.py` needs `main/webapp` and `main/splash_data` (both gitignored) generated first, OUTSIDE the IDF
 shell: `python build.py --board <b> --step webapp --step splash` (the IDF Python lacks `qrcode`; `rsvg-convert` is
