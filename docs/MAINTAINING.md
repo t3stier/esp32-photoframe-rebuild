@@ -323,7 +323,10 @@ not PowerShell.
   `gh workflow run build.yml -R t3stier/esp32-photoframe-rebuild --ref vX.Y.Z` (the release job accepts that).
   Never let both a push run and a manual run build the same tag.
 - The release feed answer must stay **below 64 KB** (the firmware's buffer): 16 assets are about 33 KB. Do not
-  attach many more or long-named assets to a release.
+  attach many more or long-named assets to a release. Measured 2026-10-10: with the 8 ELF files (24 assets) and release notes of
+  about 6 KB the answer of `releases/latest` was **58,178 bytes** (`v219.0.2`) and of the extended repository's
+  `releases?per_page=1` 59,777 bytes (`v219.0.2-rc1`) - 5-7 KB below the limit. Keep the notes short, add no assets, and
+  measure with `curl -s https://api.github.com/repos/<owner>/<repo>/releases/latest | wc -c` after publishing.
 - GitHub's runners: `actions/checkout@v5`, Node 18 in `ci.yml`. Keep the Node version in mind when web
   dependencies are updated.
 
