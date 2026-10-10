@@ -625,6 +625,12 @@ fix; the rest are standing notes, not work items.
   2026-09-29 specifically because it isn't meant to be public; its user-facing counterpart is the tracked
   [DEMO_PACKAGE.md](DEMO_PACKAGE.md). Do not track either without being asked.
 - Upstream's `gh-pages` and side branches copied into the fork are ignored; do not "clean up" without asking.
+- **Update slot headroom (measured 2026-10-10, `v219.0.2`).** The boards with internal flash only have a 3.5 MiB update slot (`ota_0`; Waveshare and M5Paper have 7.5 MiB). The Web UI without internet access
+  (`fixes`: icons and Roboto inside `index.css`) made every app about 540 KB bigger. The full builds of the base now take 3.10 MiB on the reTerminal E1004 (407 KiB free), 3.02 MiB on the XIAO EE02 (495 KiB) and
+  2.6-2.7 MiB on the others; the extended line is at 3.46 MiB on the E1004 (**40 KiB free**) and 3.38 MiB on the XIAO EE02 (126 KiB). The CI build fails when an app does not fit, so a release cannot ship an image
+  that is too big - but the next feature of the extended line may break the E1004 build. Measure with the artifacts of a Build Firmware run: download `photoframe-firmware-<board>` of every board and compare the
+  app with the slot in the partition table at `0x8000` of the merged image (`local-tools/scratch/slot_headroom.py <dir>`). Possible savings, not examined: fewer Roboto weights, a subset of the icon font (it is the whole
+  Material Design Icons set, the UI uses a few hundred icons).
 
 ## 17. File map
 
