@@ -17,6 +17,10 @@ has a 2.19 and it is merged in: `v219.0.0`, then `v219.0.1`, ...).
 
 ## [Unreleased]
 
+## [v219.0.2] - 2026-10-10
+
+Fixes only, on upstream v2.19.0. The Web UI fixes come from driving the Web UI of a frame with a script (every tab, panel and control, the import and export, uploads, the albums); seven of them are offered upstream as pull requests ([#147](https://github.com/aitjcize/esp32-photoframe/pull/147) - [#153](https://github.com/aitjcize/esp32-photoframe/pull/153)). The Agenda fixes concern calendar feeds with repeating events.
+
 ### Fixed
 
 - **A config request tells which of its fields the frame ignored** (`fixes` option): `PATCH /api/config` answered `{"status":"success"}` also when it had skipped a field - a value of the wrong JSON type (`"rotate_interval": "soon"`), or a key the firmware does not know. The answer (and its `400`) now has `"ignored": [...]` for the first and `"unknown": [...]` for the second, each left out when empty; JSON `null` is never listed; a server-pushed config is not checked. `docs/API.md` describes it; the Web UI's import names the ignored settings after an import. `main/config_track.c` does the bookkeeping, `utils.c` switches it on with file-local macros (no change at its 175 call sites), 13 host tests.
