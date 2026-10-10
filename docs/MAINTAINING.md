@@ -229,6 +229,8 @@ install differs in `assets/exif-reader.js(.gz)` only. Result of 2026-10-10 (`v21
 equals upstream's in every file; the extended line's differs in `assets/index.js` and `assets/index.css` by one scoped-style id (`data-v-fc3702bb` instead of
 `data-v-222c3704`, from `ImageUpload.vue`; the same in `v219.0.1-rc2`; the cause was not examined further, the text of all 33 web files is equal, `alloff_web.py`).
 `build.py --step webapp` in the baseline worktree turned a junctioned `node_modules` into a real install (`npm ci`), so junction again afterwards.
+Binary acceptance A for `v219.0.2` (run after the release, `main` = `abf83f7` code): Waveshare and XIAO EE02 are **equivalent** to a build of `186ebaf` - Kconfig symbols and ELF symbols identical,
+`.bin` size +0 B (2,024,576 B and 2,370,048 B). Before the stale `dependencies.lock` of the candidate tree was removed the Waveshare run said DIFFERENT, only in `mdns` symbols (section 15).
 
 `verify_baseline.py` needs `main/webapp` and `main/splash_data` (both gitignored) generated first, OUTSIDE the IDF
 shell: `python build.py --board <b> --step webapp --step splash` (the IDF Python lacks `qrcode`; `rsvg-convert` is
@@ -502,6 +504,7 @@ Do it when the maintainer asks, never on your own initiative. Experience from th
 | Web flasher install lost WiFi and all settings | Merged image covers NVS with 0xFF | Manifests list parts (`generate_manifests.py`); test with the multi-part esptool command |
 | "No flags" web bundle differs from upstream although `verify_baseline.py` passes | `LandingPage.vue` is in the device bundle; fork changes were ungated; `verify_baseline.py` gives both builds the same prebuilt web assets | Fence with `#if FORK_SITE`; `alloff_web.py` (in CI) and the manual byte compare |
 | `verify_baseline.py` fails with `exit status 2` | Its output was piped; the nested build's output fills the pipe | Run unpiped/in background, read the output file |
+| `verify_baseline.py` says DIFFERENT, with symbols of an IDF component (e.g. `mdns_*`) only in one build | The reference tree is built fresh and resolves the newest component version; the persistent `candidate` tree keeps the `dependencies.lock` of its first build (the sync skips ignored files) | Delete `.verify/<board>/candidate/dependencies.lock` and `.verify/<board>/candidate/managed_components`, run again with `--fullclean`. Seen 2026-10-10: `espressif/mdns` 1.14.0 vs 1.13.1 |
 | `git` commands all fail: `bad boolean config value` | `git config core.filemode --show-scope` wrote a value | Edit `.git/config` as text; use `git config --show-scope <key>` |
 | Executable bit not recorded | `core.fileMode=false` | `git update-index --chmod=+x <path>` |
 | Files got CRLF | Python `write_text` on Windows | `write_bytes` / `newline="\n"`; `.gitattributes` has `eol=lf` |
