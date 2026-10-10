@@ -348,7 +348,10 @@ percentage) needs `int64_t` - a host test cannot show the difference.
   `gh workflow run build.yml -R t3stier/esp32-photoframe-rebuild --ref vX.Y.Z` (the release job accepts that).
   Never let both a push run and a manual run build the same tag.
 - The release feed answer must stay **below 64 KB** (the firmware's buffer): 16 assets are about 33 KB. Do not
-  attach many more or long-named assets to a release.
+  attach many more or long-named assets to a release. Measured 2026-10-10: with the 8 ELF files (24 assets) and release notes of
+  about 6 KB the answer of `releases/latest` was **58,178 bytes** (`v219.0.2`) and of the extended repository's
+  `releases?per_page=1` 59,777 bytes (`v219.0.2-rc1`) - 5-7 KB below the limit. Keep the notes short, add no assets, and
+  measure with `curl -s https://api.github.com/repos/<owner>/<repo>/releases/latest | wc -c` after publishing.
 - GitHub's runners: `actions/checkout@v5`, Node 18 in `ci.yml`. Keep the Node version in mind when web
   dependencies are updated.
 
@@ -650,6 +653,12 @@ fix; the rest are standing notes, not work items.
   2026-09-29 specifically because it isn't meant to be public; its user-facing counterpart is the tracked
   [DEMO_PACKAGE.md](DEMO_PACKAGE.md). Do not track either without being asked.
 - Upstream's `gh-pages` and side branches copied into the fork are ignored; do not "clean up" without asking.
+- **Update slot headroom (measured 2026-10-10, `v219.0.2`).** The boards with internal flash only have a 3.5 MiB update slot (`ota_0`; Waveshare and M5Paper have 7.5 MiB). The Web UI without internet access
+  (`fixes`: icons and Roboto inside `index.css`) made every app about 540 KB bigger. The full builds of the base now take 3.10 MiB on the reTerminal E1004 (407 KiB free), 3.02 MiB on the XIAO EE02 (495 KiB) and
+  2.6-2.7 MiB on the others; the extended line is at 3.46 MiB on the E1004 (**40 KiB free**) and 3.38 MiB on the XIAO EE02 (126 KiB). The CI build fails when an app does not fit, so a release cannot ship an image
+  that is too big - but the next feature of the extended line may break the E1004 build. Measure with the artifacts of a Build Firmware run: download `photoframe-firmware-<board>` of every board and compare the
+  app with the slot in the partition table at `0x8000` of the merged image (`local-tools/scratch/slot_headroom.py <dir>`). Possible savings, not examined: fewer Roboto weights, a subset of the icon font (it is the whole
+  Material Design Icons set, the UI uses a few hundred icons).
 
 ## 17. File map
 
